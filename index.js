@@ -48,6 +48,12 @@ async function run() {
             res.send(result);
         })
 
+        // return products from db
+        app.get("/products", async (req, res) => {
+            const result = await productsCollection.find().toArray();
+            res.send(result);
+        })
+
 
 
         await client.db("admin").command({ ping: 1 });
