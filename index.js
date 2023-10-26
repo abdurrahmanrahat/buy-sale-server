@@ -35,6 +35,7 @@ async function run() {
         -----------------------*/
 
         const productsCollection = client.db("buysale").collection("products");
+        const usersCollection = client.db("buysale").collection("users");
 
 
         /*-------------------------
@@ -54,6 +55,17 @@ async function run() {
             res.send(result);
         })
 
+        /*-------------------------
+            users Collection apis
+        ---------------------------*/
+
+        // send users to db
+        app.post("/users", async (req, res) => {
+            const user = req.body;
+
+            const result = await usersCollection.insertOne(user);
+            res.send(result);
+        })
 
 
         await client.db("admin").command({ ping: 1 });
