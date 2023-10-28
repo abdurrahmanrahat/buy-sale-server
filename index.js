@@ -103,6 +103,18 @@ async function run() {
 
         })
 
+        // get isBuyer user from db
+        app.get("/buyer", async (req, res) => {
+            const email = req.query.email;
+            const user = await usersCollection.findOne({ email: email });
+            if (user?.role === "buyer") {
+                res.send(user);
+            } else {
+                return;
+            }
+
+        })
+
 
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
