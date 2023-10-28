@@ -51,7 +51,11 @@ async function run() {
 
         // return products from db
         app.get("/products", async (req, res) => {
-            const result = await productsCollection.find().toArray();
+            let query = {};
+            if (req.query?.email) {
+                query = { sellerEmail: req.query.email };
+            }
+            const result = await productsCollection.find(query).toArray();
             res.send(result);
         })
 
