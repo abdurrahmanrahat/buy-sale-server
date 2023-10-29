@@ -123,6 +123,19 @@ async function run() {
             res.send(result);
         })
 
+        // update user buyer to seller
+        app.patch("/users/:id", async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) };
+            const updateDoc = {
+                $set: {
+                    role: 'seller'
+                },
+            }
+            const result = await usersCollection.updateOne(filter, updateDoc);
+            res.send(result);
+        })
+
         // get isSeller user from db
         app.get("/seller", async (req, res) => {
             const email = req.query.email;
@@ -158,6 +171,7 @@ async function run() {
             }
 
         })
+
 
 
         await client.db("admin").command({ ping: 1 });
