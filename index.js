@@ -82,9 +82,14 @@ async function run() {
 
         // get cart product from db
         app.get("/cartproducts", async (req, res) => {
-            const result = await cartProductsCollection.find().toArray();
+            let query = {};
+            if (req.query?.email) {
+                query = { buyerEmail: req.query.email };
+            }
+            const result = await cartProductsCollection.find(query).toArray();
             res.send(result);
         })
+
 
         /*-------------------------
             users Collection apis
