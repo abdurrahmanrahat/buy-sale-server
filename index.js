@@ -35,6 +35,7 @@ async function run() {
         -----------------------*/
 
         const productsCollection = client.db("buysale").collection("products");
+        const cartProductsCollection = client.db("buysale").collection("cartProducts");
         const usersCollection = client.db("buysale").collection("users");
 
 
@@ -66,6 +67,19 @@ async function run() {
             const result = await productsCollection.findOne(query);
             res.send(result);
         })
+
+
+        /*----------------------------
+            cart products Collection apis
+        ------------------------------*/
+
+        // send cart product to db
+        app.post("/cartproducts", async (req, res) => {
+            const cartProduct = req.body;
+            const result = await cartProductsCollection.insertOne(cartProduct);
+            res.send(result);
+        })
+
 
         /*-------------------------
             users Collection apis
