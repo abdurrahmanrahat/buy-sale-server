@@ -80,6 +80,11 @@ async function run() {
             res.send(result);
         })
 
+        // get cart product from db
+        app.get("/cartproducts", async (req, res) => {
+            const result = await cartProductsCollection.find().toArray();
+            res.send(result);
+        })
 
         /*-------------------------
             users Collection apis
