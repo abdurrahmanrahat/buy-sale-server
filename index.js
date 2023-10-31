@@ -202,8 +202,13 @@ async function run() {
         // send payment data to db
         app.post("/payments", async (req, res) => {
             const payment = req.body;
-            const result = await paymentsCollection.insertOne(payment);
-            res.send(result);
+            const insertResult = await paymentsCollection.insertOne(payment);
+
+            // function for deleting from cart products after payment
+            const query = { _id: { $in: payment.cartItems.map(id => new ObjectId(id)) } }
+            const deleteResult = await cartProductsCollection.deleteMany(query);
+
+            res.send({ insertResult, deleteResult });
         })
 
 
