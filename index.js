@@ -39,6 +39,7 @@ async function run() {
         const cartProductsCollection = client.db("buysale").collection("cartProducts");
         const usersCollection = client.db("buysale").collection("users");
         const paymentsCollection = client.db("buysale").collection("payments");
+        const purchasesCollection = client.db("buysale").collection("purchases");
 
 
         /*-------------------------
@@ -206,14 +207,23 @@ async function run() {
 
             // function for deleting from cart products after payment
             const query = { _id: { $in: payment.cartItems.map(id => new ObjectId(id)) } }
+
+            // insert purchase collection then delete
+            const cartProductsData = await cartProductsCollection.find(query).toArray();
+            const insultResult = await purchasesCollection.insertMany(cartProductsData);
+
             const deleteResult = await cartProductsCollection.deleteMany(query);
 
-            res.send({ insertResult, deleteResult });
+            res.send({ insertResult, insultResult, deleteResult });
         })
 
         // get payment data from db
         app.get("/payments", async (req, res) => {
-            const result = await paymentsCollection.find().toArray();
+            let query = {};
+            if (req.query?.email) {
+                query = { email: req.query.email };
+            }
+            const result = await paymentsCollection.find(query).toArray();
             res.send(result);
         })
 
