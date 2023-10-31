@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
+const jwt = require('jsonwebtoken');
 const stripe = require("stripe")(process.env.PAYMENT_SECRET_KEY)
 
 const app = express();
@@ -40,6 +41,17 @@ async function run() {
         const usersCollection = client.db("buysale").collection("users");
         const paymentsCollection = client.db("buysale").collection("payments");
         const purchasesCollection = client.db("buysale").collection("purchases");
+
+
+        // jwt
+        app.post("/jwt", async (req, res) => {
+            const body = req.body;
+            const token = jwt.sign(body, process.env.ACCESS_TOKEN_SECRET, {
+                expiresIn: "24h",
+            });
+            res.send({ token });
+        });
+
 
 
         /*-------------------------
