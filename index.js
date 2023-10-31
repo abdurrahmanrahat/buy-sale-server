@@ -227,6 +227,20 @@ async function run() {
             res.send(result);
         })
 
+        /*-------------------------
+            purchase collection apis
+        ---------------------------*/
+
+        // get purchase products by email from db
+        app.get("/purchases", async (req, res) => {
+            let query = {};
+            if (req.query?.email) {
+                query = { buyerEmail: req.query.email };
+            }
+            const result = await purchasesCollection.find(query).toArray();
+            res.send(result);
+        })
+
 
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
