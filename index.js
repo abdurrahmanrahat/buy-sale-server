@@ -38,6 +38,7 @@ async function run() {
         const productsCollection = client.db("buysale").collection("products");
         const cartProductsCollection = client.db("buysale").collection("cartProducts");
         const usersCollection = client.db("buysale").collection("users");
+        const paymentsCollection = client.db("buysale").collection("payments");
 
 
         /*-------------------------
@@ -184,7 +185,7 @@ async function run() {
         /*-------------------------
             stripe payment apis
         ---------------------------*/
-        app.post("create-payment-intent", async (req, res) => {
+        app.post("/create-payment-intent", async (req, res) => {
             const { price } = req.body;
             const amount = price * 100;
             const paymentIntent = await stripe.paymentIntents.create({
@@ -196,6 +197,13 @@ async function run() {
             res.send({
                 clientSecret: paymentIntent.client_secret
             })
+        })
+
+        // send payment data to db
+        app.post("/payments", async (req, res) => {
+            const payment = req.body;
+            const result = await paymentsCollection.insertOne(payment);
+            res.send(result);
         })
 
 
