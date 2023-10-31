@@ -121,11 +121,18 @@ async function run() {
         })
 
         // get cart product from db
-        app.get("/cartproducts", async (req, res) => {
-            let query = {};
-            if (req.query?.email) {
-                query = { buyerEmail: req.query.email };
+        app.get("/cartproducts", verifyJwt, async (req, res) => {
+            const email = req.query.email;
+            if (!email) {
+                res.send([]);
             }
+
+            const decodedEmail = req.decoded.email;
+            if (email !== decodedEmail) {
+                return res.status(403).send({ error: "forbidden access" });
+            }
+
+            let query = { buyerEmail: email };
             const result = await cartProductsCollection.find(query).toArray();
             res.send(result);
         })
