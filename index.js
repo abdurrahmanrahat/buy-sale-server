@@ -88,12 +88,17 @@ async function run() {
             const page = parseInt(req.query.page || 1);
             const skip = (page - 1) * limit;
 
+            const search = req.query.search;
+
             let query = {};
             if (req.query?.email) {
-                query = { sellerEmail: req.query.email };
+                query.sellerEmail = req.query.email;
             }
-            if(req.query?.category){
-                query = {category: req.query.category};
+            if (req.query?.category) {
+                query.productCategory = req.query.category;
+            }
+             if (req.query?.search) {
+                query.productName = { $regex: search, $options: "i" };
             }
 
             const result = await productsCollection.find(query).limit(limit).skip(skip).toArray();
