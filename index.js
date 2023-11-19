@@ -84,11 +84,15 @@ async function run() {
 
         // return products from db
         app.get("/products", async (req, res) => {
+            const limit = parseInt(req.query.limit || 20);
+            const page = parseInt(req.query.page || 1);
+            const skip = (page - 1) * limit;
+
             let query = {};
             if (req.query?.email) {
                 query = { sellerEmail: req.query.email };
             }
-            const result = await productsCollection.find(query).toArray();
+            const result = await productsCollection.find(query).limit(limit).skip(skip).toArray();
             res.send(result);
         })
 
