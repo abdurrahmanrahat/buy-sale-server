@@ -92,6 +92,10 @@ async function run() {
             if (req.query?.email) {
                 query = { sellerEmail: req.query.email };
             }
+            if(req.query?.category){
+                query = {category: req.query.category};
+            }
+
             const result = await productsCollection.find(query).limit(limit).skip(skip).toArray();
             res.send(result);
         })
